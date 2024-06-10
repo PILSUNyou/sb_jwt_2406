@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.sql.Date;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Util {
@@ -20,6 +21,12 @@ public class Util {
             }
         }
     }
-
+    public static Map<String, Object> toMap(String jsonStr) {
+        try {
+            return new ObjectMapper().readValue(jsonStr, LinkedHashMap.class);
+        } catch (JsonProcessingException e) {
+            return null;
+        }
+    }
 
 }
