@@ -10,6 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class JwtApplicationTests {
 
 	@Autowired
-	private JwtPrivider jwtProvider;
+	private JwtProivider jwtProvider;
 
 	@Value("${custom.jwt.secretKey}")
 	private String secretKeyPlain;
@@ -42,16 +45,29 @@ class JwtApplicationTests {
 	@Test
 	@DisplayName("jwtProvider 객체를 활용하여 SercetKey 객체 생성")
 	void Test3() {
-		SecretKey secretKey = jwtProvider.getScretKey();
+		SecretKey secretKey = jwtProvider.getSecretKey();
 		assertThat(secretKey).isNotNull();
 	}
 
 	@Test
 	@DisplayName("SecretKey 객체 생성을 한 번만 하도록 처리")
 	void Test4() {
-		SecretKey secretKey1 = jwtProvider.getScretKey();
-		SecretKey secretKey2 = jwtProvider.getScretKey();
+		SecretKey secretKey1 = jwtProvider.getSecretKey();
+		SecretKey secretKey2 = jwtProvider.getSecretKey();
 		assertThat(secretKey1 == secretKey2).isTrue();
 	}
 
+	@Test
+	@DisplayName("access Token 발급")
+	void Test5() {
+		Map<String, Object> claims = new HashMap<>();
+		claims.put("id",2L);
+		claims.put("username", "user1");
+
+		String accessToken = jwtProvider.getToken(claims, 60 * 60 * 5);
+
+		System.out.println("accessToken : " + accessToken);
+
+		assertThat(accessToken).isNotNull();
+	}
 }
